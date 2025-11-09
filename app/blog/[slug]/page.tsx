@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import type { RouteParams } from "next"
 
 interface BlogPostDetail {
   id: string
@@ -17,7 +18,12 @@ interface BlogPostDetail {
   post_images: Array<{ image_url: string; alt_text: string; order_index?: number }>
 }
 
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
+// Use Next.js RouteParams for typing dynamic routes
+export default async function BlogDetailPage({
+  params,
+}: {
+  params: RouteParams<{ slug: string }>
+}): Promise<JSX.Element> {
   const { slug } = params
   const supabase = await createClient()
 
@@ -59,7 +65,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             {/* Author Info */}
             <div className="flex items-center gap-4 pb-8 border-b border-neutral-200">
               <div className="w-12 h-12 rounded-full bg-neutral-200 overflow-hidden">
-                {post_detail.profiles.avatar_url ? (
+                {post_detail.profiles.avatar_url && (
                   <Image
                     src={post_detail.profiles.avatar_url || "/placeholder.svg"}
                     alt={post_detail.profiles.display_name}
@@ -67,7 +73,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                     height={48}
                     className="object-cover"
                   />
-                ) : null}
+                )}
               </div>
               <div>
                 <p className="font-medium text-neutral-900">{post_detail.profiles.display_name}</p>
